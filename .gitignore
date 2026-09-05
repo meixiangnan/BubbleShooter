@@ -1,10 +1,36 @@
 # 编辑器/IDE
 .idea/
 .vscode/
+.vs/
+.cursor/
+.utmp/
 *.suo
 *.user
 *.useross
 *.sln.docstates
+
+# Unity 生成
+Library/
+Temp/
+Logs/
+UserSettings/
+Obj/
+MemoryCaptures/
+Recordings/
+*.csproj
+*.unityproj
+*.sln
+*.slnx
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+*.pidb.meta
+*.pdb.meta
+*.mdb.meta
 
 # 编译/运行
 [Dd]ebug/
@@ -21,15 +47,19 @@ output/
 *.tmp
 *.cache
 .DS_Store
+Thumbs.db
 node_modules/
 
-# 自己加的目录（示例）
-Library/
-Temp/
-Logs/
+# 密钥与敏感文件（切勿入库）
+*.keystore
+*.jks
+*.pem
+*.p12
+*.pfx
+*_Secret*
+*_secret*
 
-# 编辑器个人设置
-UserSettings/
-
-# 备份文件
+# 临时/杂项
+temp_test.docx
+add
 *.backup*
