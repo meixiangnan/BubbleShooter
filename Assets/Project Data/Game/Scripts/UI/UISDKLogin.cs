@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Text.RegularExpressions;
 using SuperScrollView;
 using TMPro;
@@ -99,6 +98,13 @@ namespace Watermelon
             
             bgColor = transform.Find("bgColor")?.gameObject;
             bgColor_login = transform.Find("bgColor_login")?.gameObject;
+
+            // Backgrounds are decorative; keep them from stealing button clicks.
+            var bgImage = bgColor != null ? bgColor.GetComponent<Image>() : null;
+            if (bgImage != null) bgImage.raycastTarget = false;
+            var bgLoginImage = bgColor_login != null ? bgColor_login.GetComponent<Image>() : null;
+            if (bgLoginImage != null) bgLoginImage.raycastTarget = false;
+
             // Do not SetState here — PlayShowAnimation decides the visible page
             // (avoids forcing QuickStart/Logout before opening GameDispatch).
         }

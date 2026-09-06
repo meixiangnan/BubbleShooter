@@ -125,7 +125,7 @@ MonoBehaviour:
   m_Name: Watermelon.GameLoadingInitModule
   m_EditorClassIdentifier: 
   moduleName: Game Loading Settings
-  manualControlMode: 0
+  manualControlMode: 1
   loadingCanvasObject: {fileID: 3395919838312422690, guid: 74d643b634085684e8429f7b41c490fe, type: 3}
 --- !u!114 &3939279428774672451
 MonoBehaviour:

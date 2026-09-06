@@ -128,6 +128,12 @@ namespace Watermelon
 
         public static void AddTween(TweenCase tween, UpdateMethod tweenType)
         {
+            if (instance == null || updateTweens == null)
+            {
+                Debug.LogWarning("[Tween]: AddTween skipped — Tween not initialised yet.");
+                return;
+            }
+
             switch (tweenType)
             {
                 case UpdateMethod.Update:

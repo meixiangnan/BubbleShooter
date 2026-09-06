@@ -55,7 +55,8 @@ namespace BubbleShooterKit
             if (!IsActive())
                 return;
 
-            animator.SetTrigger("Pressed");
+            if (animator != null)
+                animator.SetTrigger("Pressed");
             StartCoroutine(InvokeOnClickAction());
         }
 

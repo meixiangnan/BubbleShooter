@@ -48,12 +48,28 @@ namespace Watermelon
                 gameGlobal = this.AddComponent<GameGlobal>();
                 gameGlobal.Init();
 
+                // Remove leftover modules immediately (Destroy is deferred and can leave EventSystem stuck).
+                var existingModules = eventSystem.GetComponents<BaseInputModule>();
+                for (int i = 0; i < existingModules.Length; i++)
+                    DestroyImmediate(existingModules[i]);
+
 #if MODULE_INPUT_SYSTEM
-                eventSystem.gameObject.AddComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>();
+                var uiModule = eventSystem.gameObject.AddComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>();
+                uiModule.AssignDefaultActions();
 #else
                 eventSystem.gameObject.AddComponent<StandaloneInputModule>();
-                
 #endif
+
+                // SystemCanvas is empty Overlay @ sorting 999; with Input System it can swallow all UI clicks.
+                if (systemCanvas != null)
+                {
+                    systemCanvas.overrideSorting = true;
+                    systemCanvas.sortingOrder = 0;
+                    systemCanvas.enabled = false;
+                    var systemRaycaster = systemCanvas.GetComponent<UnityEngine.UI.GraphicRaycaster>();
+                    if (systemRaycaster != null)
+                        systemRaycaster.enabled = false;
+                }
 
                 DontDestroyOnLoad(gameObject);
 

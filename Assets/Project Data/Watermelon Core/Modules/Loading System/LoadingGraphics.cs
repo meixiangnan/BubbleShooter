@@ -39,6 +39,16 @@ namespace Watermelon
 
         private void OnLoadingFinished()
         {
+            // Stop blocking clicks immediately; fade is visual only.
+            if (backgroundImage != null)
+                backgroundImage.raycastTarget = false;
+            var raycaster = GetComponent<GraphicRaycaster>();
+            if (raycaster != null)
+                raycaster.enabled = false;
+            var canvas = GetComponent<Canvas>();
+            if (canvas != null)
+                canvas.enabled = false;
+
             loadingText.DOFade(0.0f, 0.6f, unscaledTime: true);
             backgroundImage.DOFade(0.0f, 0.6f, unscaledTime: true).OnComplete(delegate
             {

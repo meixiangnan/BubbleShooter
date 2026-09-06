@@ -1,8 +1,5 @@
-﻿// Copyright (C) 2018 gamevanilla. All rights reserved.
-// This code can only be used under the standard Unity Asset Store End User License Agreement,
-// a copy of which is available at http://unity3d.com/company/legal/as_terms.
-
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.UI;
 
 namespace BubbleShooterKit
 {
@@ -13,6 +10,17 @@ namespace BubbleShooterKit
     {
         private bool floating;
         private float runningTime;
+
+        private void Awake()
+        {
+            // Avatar is decorative; keep clicks going to LevelMapButton underneath.
+            var graphics = GetComponentsInChildren<Graphic>(true);
+            for (int i = 0; i < graphics.Length; i++)
+            {
+                if (graphics[i] != null)
+                    graphics[i].raycastTarget = false;
+            }
+        }
 
         private void Update()
         {

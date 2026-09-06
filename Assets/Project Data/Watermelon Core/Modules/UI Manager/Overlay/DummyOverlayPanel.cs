@@ -23,7 +23,8 @@ namespace Watermelon
 
             image = overlayObject.AddComponent<Image>();
             image.color = new Color(0, 0, 0, 0);
-            image.raycastTarget = true;
+            // Idle overlay must not swallow UI clicks (e.g. Quick Start).
+            image.raycastTarget = false;
         }
 
         public void SetCanvas(Canvas canvas)
@@ -33,6 +34,7 @@ namespace Watermelon
 
         public void Show(float duration, SimpleCallback onCompleted)
         {
+            image.raycastTarget = true;
             fadeTweenCase.KillActive();
             fadeTweenCase = image.DOFade(1.0f, duration, unscaledTime: true).SetEasing(Ease.Type.Linear).OnComplete(onCompleted);
         }
@@ -40,7 +42,11 @@ namespace Watermelon
         public void Hide(float duration, SimpleCallback onCompleted)
         {
             fadeTweenCase.KillActive();
-            fadeTweenCase = image.DOFade(0.0f, duration, unscaledTime: true).SetEasing(Ease.Type.Linear).OnComplete(onCompleted);
+            fadeTweenCase = image.DOFade(0.0f, duration, unscaledTime: true).SetEasing(Ease.Type.Linear).OnComplete(() =>
+            {
+                image.raycastTarget = false;
+                onCompleted?.Invoke();
+            });
         }
 
         public void Clear()

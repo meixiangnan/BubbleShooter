@@ -337,6 +337,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: UIShop
       objectReference: {fileID: 0}
+    - target: {fileID: 3312816484583607269, guid: f5d8d67be27abd5408a051c2c3947ea3, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4403509524289665547, guid: f5d8d67be27abd5408a051c2c3947ea3, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1780,7 +1784,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5381765107609156826, guid: a6a57bc430670554483b9c3ee65a7f34, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5505864566616153333, guid: a6a57bc430670554483b9c3ee65a7f34, type: 3}
       propertyPath: m_Pivot.x

@@ -77,9 +77,26 @@ namespace Watermelon
             // Initialise currency cloud
             currencyCloud.Initialise();
 
+            // Hide every page first so a failed Initialise cannot leave Shop/etc visible.
             for (int i = 0; i < pages.Count; i++)
             {
-                pages[i].Initialise();
+                pages[i].DisableCanvas();
+                if (pages[i].gameObject != null)
+                    pages[i].gameObject.SetActive(false);
+            }
+
+            for (int i = 0; i < pages.Count; i++)
+            {
+                try
+                {
+                    pages[i].gameObject.SetActive(true);
+                    pages[i].Initialise();
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError($"[UIController] Initialise failed for {pages[i].GetType().Name}: {e}");
+                }
+
                 pages[i].DisableCanvas();
             }
         }
@@ -102,42 +119,50 @@ namespace Watermelon
         public static void ShowPage<T>(object param = null) where T : UIPage
         {
             Type pageType = typeof(T);
-            UIPage page = pagesLink[pageType];
-            if (!page.IsPageDisplayed)
+            if (!pagesLink.TryGetValue(pageType, out UIPage page) || page == null)
             {
-                page.PlayShowAnimation(param);
-                page.EnableCanvas();
+                Debug.LogError($"[UIController] ShowPage failed — page missing: {pageType.Name}");
+                return;
+            }
+
+            page.PlayShowAnimation(param);
+            page.EnableCanvas();
+            if (page.GraphicRaycaster != null)
                 page.GraphicRaycaster.enabled = true;
-            }
-            else
-            {
-                page.PlayShowAnimation(param);
-            }
         }
 
         public static void ShowPage(UIPage page)
         {
-            if (!page.IsPageDisplayed)
-            {
-                page.PlayShowAnimation();
-                page.EnableCanvas();
+            if (page == null)
+                return;
+
+            page.PlayShowAnimation();
+            page.EnableCanvas();
+            if (page.GraphicRaycaster != null)
                 page.GraphicRaycaster.enabled = true;
-            }
         }
 
         public static void HidePage<T>(SimpleCallback onPageClosed = null)
         {
             Type pageType = typeof(T);
-            UIPage page = pagesLink[pageType];
+            if (!pagesLink.TryGetValue(pageType, out UIPage page) || page == null)
+            {
+                onPageClosed?.Invoke();
+                return;
+            }
+
             if (page.IsPageDisplayed)
             {
                 localPageClosedCallback = onPageClosed;
 
-                page.GraphicRaycaster.enabled = false;
+                if (page.GraphicRaycaster != null)
+                    page.GraphicRaycaster.enabled = false;
                 page.PlayHideAnimation();
             }
             else
             {
+                // Scene defaults may leave Canvas enabled even when IsPageDisplayed=false.
+                page.DisableCanvas();
                 onPageClosed?.Invoke();
             }
         }

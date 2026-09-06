@@ -48,12 +48,14 @@ namespace Watermelon
         public override void Initialise()
         {
             coinsPanel.Initialise();
-            
 
             NotchSaveArea.RegisterRectTransform(safeAreaRectTransform);
-            mainMap.Initialized();
-            
-            SettingsButton.onClick.AddListener(this.OpenSettingPanel);
+
+            if (mainMap != null)
+                mainMap.Initialized();
+
+            if (SettingsButton != null)
+                SettingsButton.onClick.AddListener(this.OpenSettingPanel);
         }
 
         private void OpenSettingPanel()

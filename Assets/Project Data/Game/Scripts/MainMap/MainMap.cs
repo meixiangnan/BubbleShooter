@@ -33,28 +33,50 @@ public class MainMap : MonoBehaviour
     
     public void Initialized()
     {
+        if (chapterSwitches == null)
+            chapterSwitches = new List<ChapterSwitch>();
+
         for (int i = 0; i < chapterSwitches.Count; i++)
         {
+            if (chapterSwitches[i] == null)
+                continue;
+
             chapterSwitches[i].OnSelect += (index, bg) =>
             {
                 this.SwitchChapter(index, bg);
             };
         }
-        
+
+        if (scrollView == null)
+        {
+            Debug.LogError("[MainMap] scrollView is missing");
+            return;
+        }
+
         scrollView.InitListView(GroupCnt, GetItemCount);
-        
+
         SelectChapterByProgress();
     }
 
     public void Refresh()
     {
+        if (scrollView == null)
+            return;
+
         SelectChapterByProgress();
         scrollView.RefreshAllShownItem();
     }
 
     private void SelectChapterByProgress()
     {
-        int progressLevel = GameGlobal.Instance.GetModule<RoleModule>().PassLevelShow;
+        if (GameGlobal.Instance == null)
+            return;
+
+        var roleModule = GameGlobal.Instance.GetModule<RoleModule>();
+        if (roleModule == null)
+            return;
+
+        int progressLevel = roleModule.PassLevelShow;
         progressLevel = Mathf.Clamp(progressLevel, 1, GameLevelConfig.TotalLevelCount);
 
         int chapterIndex = ((progressLevel - 1) / GameLevelConfig.LevelsPerChapter) + 1;
@@ -63,15 +85,19 @@ public class MainMap : MonoBehaviour
         int levelInChapter = (progressLevel - 1) % GameLevelConfig.LevelsPerChapter;
         int targetGroupIndex = levelInChapter / ChapterLevelGroup.LevelMaxNum;
 
+        if (chapterSwitches == null || chapterSwitches.Count == 0)
+            return;
+
         ChapterSwitch chapterSwitch = chapterSwitches.Find(item => item != null && item.ChapterIndex == chapterIndex);
         if (chapterSwitch != null)
         {
             chapterSwitch.SetSelect();
-            scrollView.RefreshAllShownItemWithFirstIndex(targetGroupIndex);
+            if (scrollView != null)
+                scrollView.RefreshAllShownItemWithFirstIndex(targetGroupIndex);
             return;
         }
 
-        if (chapterSwitches.Count > 0 && chapterSwitches[0] != null)
+        if (chapterSwitches[0] != null)
         {
             chapterSwitches[0].SetSelect();
         }

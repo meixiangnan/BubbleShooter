@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Project_Data.SDK;
 using UnityEngine;
+using Watermelon.IAPStore;
 using Watermelon.Map;
 using Random = System.Random;
 
@@ -57,17 +58,54 @@ namespace Watermelon
 
         public void InitialiseGame()
         {
-            uiController.Initialise();
+            try
+            {
+                uiController.Initialise();
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[GameController] UIController.Initialise failed: {e}");
+            }
 
-            particlesController.Initialise();
-            floatingTextController.Inititalise();
-            currenciesController.Initialise();
+            try { particlesController.Initialise(); }
+            catch (Exception e) { Debug.LogError($"[GameController] particles init failed: {e}"); }
 
-            powerUpController.Initialise();
-            levelController.Initialise();
-            tutorialController.Initialise();
+            try { floatingTextController.Inititalise(); }
+            catch (Exception e) { Debug.LogError($"[GameController] floatingText init failed: {e}"); }
 
-            uiController.InitialisePages();
+            try { currenciesController.Initialise(); }
+            catch (Exception e) { Debug.LogError($"[GameController] currencies init failed: {e}"); }
+
+            try { powerUpController.Initialise(); }
+            catch (Exception e) { Debug.LogError($"[GameController] powerUp init failed: {e}"); }
+
+            try { levelController.Initialise(); }
+            catch (Exception e) { Debug.LogError($"[GameController] level init failed: {e}"); }
+
+            try { tutorialController.Initialise(); }
+            catch (Exception e) { Debug.LogError($"[GameController] tutorial init failed: {e}"); }
+
+            try
+            {
+                uiController.InitialisePages();
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[GameController] InitialisePages failed: {e}");
+            }
+
+            // Always force a clean start page — never leave Shop/IAP visible from scene defaults.
+            try
+            {
+                UIController.HidePage<UIIAPStore>();
+            }
+            catch (Exception) { }
+
+            try
+            {
+                UIController.HidePage<UIShop>();
+            }
+            catch (Exception) { }
 
             // Returning from BubbleShooterKit LevelScreen → GameDispatch lobby
             if (PlayerPrefs.GetInt("open_game_dispatch", 0) == 1)
@@ -78,8 +116,7 @@ namespace Watermelon
                 return;
             }
 
-            // Cold start: always show 快速进入; failure inside UISDKLogin goes to Login.
-            // Do not skip via SDK auth — that jumps straight to UIMainMenu / level map.
+            // Cold start: always show 快速进入
             PlayerPrefs.DeleteKey("open_game_dispatch");
             UIController.ShowPage<UISDKLogin>(new ShowUISDKLoginParam() { InitState = UILoginState.QuickStart });
             GameLoading.MarkAsReadyToHide();

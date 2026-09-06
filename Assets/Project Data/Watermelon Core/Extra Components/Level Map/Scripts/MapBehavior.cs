@@ -141,10 +141,10 @@ namespace Watermelon.Map
 
         private void Update()
         {
-            if (Input.GetMouseButtonDown(0))
+            if (PointerInput.GetButtonDown())
             {
                 // mouse press y position mapped on 0-1 scale. 0 is the bottom of the screen, 1 is the top)
-                mousePressPosY = Input.mousePosition.y / Camera.main.pixelHeight;
+                mousePressPosY = PointerInput.Position.y / Camera.main.pixelHeight;
                 mousePrevFramePosY = mousePressPosY;
                 currentLowestChunkPosY = LowestLoadedChunk.Position;
 
@@ -152,7 +152,7 @@ namespace Watermelon.Map
 
                 rubberCase.KillActive();
             }
-            else if(Input.GetMouseButtonUp(0))
+            else if(PointerInput.GetButtonUp())
             {
                 isMouseDown = false;
 
@@ -162,7 +162,7 @@ namespace Watermelon.Map
                     BottomRubber();
                 } else
                 {
-                    mouseReleasePosY = Input.mousePosition.y / Camera.main.pixelHeight;
+                    mouseReleasePosY = PointerInput.Position.y / Camera.main.pixelHeight;
                     var dif = mouseReleasePosY - mousePrevFramePosY;
 
                     // There was a swipe movement, need to scroll a little bit more for a little bit of time to feel natural
@@ -174,7 +174,7 @@ namespace Watermelon.Map
             } 
             else if (isMouseDown)
             {
-                var mousePosY = Input.mousePosition.y / Camera.main.pixelHeight;
+                var mousePosY = PointerInput.Position.y / Camera.main.pixelHeight;
                 mousePrevFramePosY = mousePosY;
 
                 mouseMoveDeltaY = mousePosY - mousePressPosY;
@@ -270,7 +270,7 @@ namespace Watermelon.Map
             }
 
             // Reseting movement parameters in order to preserve scroll smoothness
-            mousePressPosY = Input.mousePosition.y / Camera.main.pixelHeight;
+            mousePressPosY = PointerInput.Position.y / Camera.main.pixelHeight;
             currentLowestChunkPosY = LowestLoadedChunk.Position;
 
             mouseMoveDeltaY = 0;

@@ -1,4 +1,3 @@
-using GladeAgenticAI.Core.Tools.Implementations.Build;
 using GladeAgenticAI.Core.Tools.Implementations.Camera;
 using GladeAgenticAI.Core.Tools.Implementations.Diagnostics;
 using GladeAgenticAI.Core.Tools.Implementations.Profiler;
@@ -40,15 +39,8 @@ namespace GladeAgenticAI.Services
             Register(new StartPlayabilityProbeTool());
             Register(new GetPlayabilityProbeResultTool());
 
-            // Build / export (4) — shipping the game: the terminal step of
-            // every project. recon -> configure -> build -> poll. The poll is
-            // a separate tool because BuildPipeline.BuildPlayer blocks Unity's
-            // main thread with no async variant, so the build cannot answer
-            // within a client's request timeout on any real project.
-            Register(new GetBuildInfoTool());
-            Register(new SetBuildScenesTool());
-            Register(new BuildPlayerTool());
-            Register(new GetBuildStatusTool());
+            // Build / export tools omitted: Implementations/Build sources are
+            // missing from this bridge package revision (would CS0234).
         }
     }
 }

@@ -31,14 +31,36 @@ namespace Watermelon
         {
             isPageDisplayed = true;
 
-            canvas.enabled = true;
+            if (!gameObject.activeSelf)
+                gameObject.SetActive(true);
+
+            if (canvas != null)
+            {
+                // Nested page canvases under UI Main Canvas often fail GraphicRaycast
+                // unless they override sorting and render as Overlay.
+                canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+                canvas.overrideSorting = true;
+                if (canvas.sortingOrder < 600)
+                    canvas.sortingOrder = 600;
+                canvas.worldCamera = null;
+                canvas.enabled = true;
+            }
+
+            if (graphicRaycaster != null)
+                graphicRaycaster.enabled = true;
+
+            Canvas.ForceUpdateCanvases();
         }
 
         public void DisableCanvas()
         {
             isPageDisplayed = false;
 
-            canvas.enabled = false;
+            if (canvas != null)
+                canvas.enabled = false;
+
+            if (graphicRaycaster != null)
+                graphicRaycaster.enabled = false;
 
             UIController.SetGameUIInputState(true);
         }

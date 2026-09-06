@@ -27,9 +27,9 @@ namespace Watermelon
         {
             if (!isActive || !LevelController.IsRaycastEnabled) return;
 
-            if (Input.GetMouseButtonDown(0) && !IsRaycastBlockedByUI())
+            if (PointerInput.GetButtonDown() && !IsRaycastBlockedByUI())
             {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                Ray ray = Camera.main.ScreenPointToRay(PointerInput.Position);
                 RaycastHit hit;
 
                 if (Physics.Raycast(ray, out hit))
