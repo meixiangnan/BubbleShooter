@@ -107,19 +107,41 @@ namespace Watermelon
             }
             catch (Exception) { }
 
-            // Returning from BubbleShooterKit LevelScreen → GameDispatch lobby
+            // Returning from BubbleShooterKit within the same process → GameDispatch lobby.
+            // (Cold start clears this key in Initialiser so stale prefs cannot skip start/login.)
             if (PlayerPrefs.GetInt("open_game_dispatch", 0) == 1)
             {
                 PlayerPrefs.DeleteKey("open_game_dispatch");
-                UIController.ShowPage<UISDKLogin>(new ShowUISDKLoginParam() { InitState = UILoginState.GameDispatch });
-                GameLoading.MarkAsReadyToHide();
-                return;
+
+                // Only reopen lobby if there is a saved session; otherwise fall through to start/login.
+                if (HasSavedLoginAccount())
+                {
+                    UIController.ShowPage<UISDKLogin>(new ShowUISDKLoginParam() { InitState = UILoginState.GameDispatch });
+                    GameLoading.MarkAsReadyToHide();
+                    return;
+                }
             }
 
-            // Cold start: always show 快速进入
-            PlayerPrefs.DeleteKey("open_game_dispatch");
-            UIController.ShowPage<UISDKLogin>(new ShowUISDKLoginParam() { InitState = UILoginState.QuickStart });
+            // Cold start: saved account → 快速开始(startBtn); otherwise → 登录页.
+            var startState = HasSavedLoginAccount() ? UILoginState.QuickStart : UILoginState.Login;
+            UIController.ShowPage<UISDKLogin>(new ShowUISDKLoginParam() { InitState = startState });
             GameLoading.MarkAsReadyToHide();
+        }
+
+        private static bool HasSavedLoginAccount()
+        {
+            try
+            {
+                var roleModule = GameGlobal.Instance != null
+                    ? GameGlobal.Instance.GetModule<RoleModule>()
+                    : null;
+                return roleModule != null && roleModule.HasSavedLogin();
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning($"[GameController] HasSavedLoginAccount failed: {e.Message}");
+                return false;
+            }
         }
 
         public static void LoadLevel(int index, SimpleCallback onLevelLoaded = null)

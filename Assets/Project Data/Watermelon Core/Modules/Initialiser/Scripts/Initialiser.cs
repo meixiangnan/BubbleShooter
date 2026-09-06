@@ -40,6 +40,9 @@ namespace Watermelon
             {
                 IsInititalized = true;
 
+                // Stale flag from a previous process would wrongly open GameDispatch on cold start.
+                PlayerPrefs.DeleteKey("open_game_dispatch");
+
                 InitSettings = initSettings;
                 SystemCanvas = systemCanvas;
                 InitialiserGameObject = gameObject;

@@ -353,6 +353,20 @@ public class RoleModule : GameModuleBase
         }
     }
 
+    /// <summary>
+    /// True when a previous login left a usable local account for 快速开始.
+    /// </summary>
+    public bool HasSavedLogin()
+    {
+        ReadLocalRoleInfo();
+        if (userData == null)
+            return false;
+
+        return !string.IsNullOrEmpty(userData.token)
+               && !string.IsNullOrEmpty(userData.Account)
+               && userData.UserId > 0;
+    }
+
     public bool IsHavePuItem(PUType pu)
     {
         if (!IsTutorialOver())

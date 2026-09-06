@@ -117,7 +117,11 @@ namespace Watermelon
             }
             else
             {
-                SetState(UILoginState.QuickStart);
+                // No explicit state: prefer startBtn when a local account exists.
+                var role = GetModule<RoleModule>();
+                SetState(role != null && role.HasSavedLogin()
+                    ? UILoginState.QuickStart
+                    : UILoginState.Login);
             }
 
             NoticePanel.gameObject.SetActive(false);
